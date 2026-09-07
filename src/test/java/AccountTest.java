@@ -34,4 +34,16 @@ public class AccountTest {
                 () -> assertEquals(2000.0, acc.getAmount())
         );
     }
+
+    @Test
+    void testConstructorWithNegativeAmount() {
+        // Boundary/invalid input case: negative amount passed at account creation.
+        // Related to the negative-amount defect identified in Activity 2 (Part B).
+        Account acc = new Account("Charlie", 11112222, "0000", -500.0);
+
+        // The constructor always does "1000 + amount", so passing -500 results in 500.
+        // This documents the ACTUAL current behaviour, so we notice if it ever changes.
+        assertEquals(500.0, acc.getAmount());
+    }
+
 }
