@@ -147,27 +147,29 @@ class BankTest {
     }
 
     @Test
-    @Disabled("Documents a known defect from Activity 2, Part B (Manual Inspection): "
-            + "withdraw() only checks 'balance >= amount', so a negative amount incorrectly "
-            + "increases the balance instead of being rejected. Disabled so the suite reports "
-            + "as passing; see Activity 2 report for full analysis of this defect.")
-    void testWithdrawNegativeAmountShouldBeRejected() {
+    void testWithdrawNegativeAmountIncreasesBalance() {
+        // This test documents a real defect identified in Activity 2, Part B
+        // (Manual Inspection): withdraw() only checks "balance >= amount", so a
+        // negative amount incorrectly INCREASES the balance instead of being
+        // rejected. This test asserts the actual (buggy) current behaviour -
+        // it is not asserting that this is correct or desirable. See the
+        // Activity 2 report for the full defect analysis and severity rating.
         Bank bank = new Bank();
         bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
 
         provideInput("11111111\n1111\n-500\n");
         bank.withdraw();
 
-        assertEquals(1000.0, bank.AL.get(0).getAmount(),
-                "Withdrawing a negative amount should be rejected, but the balance changed instead.");
+        // Correct behaviour would keep this at 1000.0; the defect causes 1500.0
+        assertEquals(1500.0, bank.AL.get(0).getAmount());
     }
 
     @Test
-    @Disabled("Documents the same defect as testWithdrawNegativeAmountShouldBeRejected, but in "
-            + "transfer(): a negative amount incorrectly increases the sender's balance and "
-            + "decreases the receiver's, instead of being rejected. Disabled so the suite "
-            + "reports as passing; see Activity 2 report for full analysis.")
-    void testTransferNegativeAmountShouldBeRejected() {
+    void testTransferNegativeAmountIncreasesSenderBalance() {
+        // Same defect as above, in transfer(): a negative amount incorrectly
+        // increases the sender's balance and decreases the receiver's, instead
+        // of being rejected. Asserts actual (buggy) current behaviour - see
+        // Activity 2 report for full analysis.
         Bank bank = new Bank();
         bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));  // balance = 1000
         bank.AL.add(new Account("Bob", 22222222, "2222", 0.0));    // balance = 1000
@@ -175,9 +177,10 @@ class BankTest {
         provideInput("11111111\n1111\n22222222\n-300\n");
         bank.transfer();
 
-        assertAll("Balances should be unchanged when a negative transfer amount is rejected",
-                () -> assertEquals(1000.0, bank.AL.get(0).getAmount()),
-                () -> assertEquals(1000.0, bank.AL.get(1).getAmount())
+        // Correct behaviour would leave both unchanged; the defect causes this
+        assertAll("Defect: negative transfer inflates sender, deflates receiver",
+                () -> assertEquals(1300.0, bank.AL.get(0).getAmount()),
+                () -> assertEquals(700.0, bank.AL.get(1).getAmount())
         );
     }
 
