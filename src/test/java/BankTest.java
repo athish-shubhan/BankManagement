@@ -123,4 +123,25 @@ class BankTest {
         assertEquals(700.0, bank.AL.get(0).getAmount());
     }
 
+    @Test
+    void testPrint() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Capture what print() actually writes to System.out
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(outContent));
+
+        bank.print();
+
+        System.setOut(originalOut); // restore real output
+
+        String output = outContent.toString();
+        assertAll("Printed account details are correct",
+                () -> assertTrue(output.contains("Alice")),
+                () -> assertTrue(output.contains("11111111")),
+                () -> assertTrue(output.contains("1000.0"))
+        );
+    }
 }
