@@ -264,4 +264,45 @@ class BankTest {
             asDirectory.delete(); // clean up the directory we created
         }
     }
+
+    @Test
+    void testWithdrawWithMultipleAccountsInList() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));  // balance = 1000
+        bank.AL.add(new Account("Bob", 22222222, "2222", 0.0));    // balance = 1000
+
+        // Withdraw from Bob (second account), forcing the loop to check
+        // Alice first (no match), then Bob (match)
+        provideInput("22222222\n2222\n200\n");
+        bank.withdraw();
+
+        assertAll(
+                () -> assertEquals(1000.0, bank.AL.get(0).getAmount()), // Alice unchanged
+                () -> assertEquals(800.0, bank.AL.get(1).getAmount())   // Bob withdrew 200
+        );
+    }
+
+    @Test
+    void testLoadStopsWhenNullObjectEncountered() throws Exception {
+        java.io.File file = new java.io.File("BankRecord.txt");
+        file.delete();
+
+        try {
+
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
+            java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(fos);
+            out.writeObject(new Account("Alice", 11111111, "1111", 0.0));
+            out.writeObject(null);
+            out.close();
+
+            Bank bank = new Bank();
+            bank.load();
+
+            assertEquals(1, bank.AL.size());
+            assertEquals("Alice", bank.AL.get(0).getName());
+        } finally {
+            file.delete();
+        }
+    }
 }
+
