@@ -46,4 +46,16 @@ public class AccountTest {
         assertEquals(500.0, acc.getAmount());
     }
 
+    @Test
+    void testSetAmountWithNegativeValue() {
+        //???? IDK if i should include this as Bank.transfer()/withdraw() but is it necessary
+        // Checks whether setAmount() validates its input the same way the
+        // constructor does (or doesn't) - relevant since Bank.transfer()/withdraw()
+        // call setAmount() directly, not the constructor.
+        Account acc = new Account();
+        acc.setAmount(-750.0);
+
+        assertEquals(-750.0, acc.getAmount());
+    }
+
 }
