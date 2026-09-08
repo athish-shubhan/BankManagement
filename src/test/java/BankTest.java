@@ -214,4 +214,54 @@ class BankTest {
         // with no error message shown to the user (see Activity 2, Part B).
         assertEquals(0, bank.AL.size());
     }
+
+    @Test
+    void testTransferWrongPin() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Correct account number, but wrong PIN
+        provideInput("11111111\nWRONGPIN\n");
+        bank.transfer();
+
+        assertEquals(1000.0, bank.AL.get(0).getAmount());
+    }
+
+    @Test
+    void testWithdrawWrongPin() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Correct account number, but wrong PIN
+        provideInput("11111111\nWRONGPIN\n");
+        bank.withdraw();
+
+        assertEquals(1000.0, bank.AL.get(0).getAmount());
+    }
+
+    @Test
+    void testSaveFailure() {
+        // Force save() to fail by making "BankRecord.txt" already exist as a
+        // directory - FileOutputStream cannot write to a path that is a directory,
+        // so this triggers the catch block in save().
+        java.io.File asDirectory = new java.io.File("BankRecord.txt");
+        asDirectory.mkdir();
+
+        try {
+            java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+            java.io.PrintStream originalOut = System.out;
+            System.setOut(new java.io.PrintStream(outContent));
+
+            Bank bank = new Bank();
+            bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));
+            bank.save(); // should hit the catch block, not throw
+
+            System.setOut(originalOut);
+
+            String output = outContent.toString();
+            assertTrue(output.contains("Error Saving Data to File"));
+        } finally {
+            asDirectory.delete(); // clean up the directory we created
+        }
+    }
 }
