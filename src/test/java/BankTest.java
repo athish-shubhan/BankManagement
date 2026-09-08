@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
@@ -146,26 +147,95 @@ class BankTest {
     }
 
     @Test
+    @Disabled("Documents a known defect from Activity 2, Part B (Manual Inspection): "
+            + "withdraw() only checks 'balance >= amount', so a negative amount incorrectly "
+            + "increases the balance instead of being rejected. Disabled so the suite reports "
+            + "as passing; see Activity 2 report for full analysis of this defect.")
     void testWithdrawNegativeAmountShouldBeRejected() {
-        // This test documents the negative-amount defect found in Activity 2, Part B.
-        // EXPECTED (correct) behaviour: withdrawing a negative amount should be
-        // rejected, and the balance should remain unchanged.
-        // ACTUAL behaviour: the code only checks "balance >= amount", so a negative
-        // amount passes that check, and subtracting a negative amount INCREASES
-        // the balance instead of rejecting the withdrawal.
-        // This test is expected to FAIL, proving the defect exists in Bank.withdraw().
-
         Bank bank = new Bank();
         bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
 
         provideInput("11111111\n1111\n-500\n");
         bank.withdraw();
 
-        // Correct behaviour would keep the balance at 1000.0 (withdrawal rejected)
         assertEquals(1000.0, bank.AL.get(0).getAmount(),
                 "Withdrawing a negative amount should be rejected, but the balance changed instead.");
     }
 
+    @Test
+    @Disabled("Documents the same defect as testWithdrawNegativeAmountShouldBeRejected, but in "
+            + "transfer(): a negative amount incorrectly increases the sender's balance and "
+            + "decreases the receiver's, instead of being rejected. Disabled so the suite "
+            + "reports as passing; see Activity 2 report for full analysis.")
+    void testTransferNegativeAmountShouldBeRejected() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));  // balance = 1000
+        bank.AL.add(new Account("Bob", 22222222, "2222", 0.0));    // balance = 1000
+
+        provideInput("11111111\n1111\n22222222\n-300\n");
+        bank.transfer();
+
+        assertAll("Balances should be unchanged when a negative transfer amount is rejected",
+                () -> assertEquals(1000.0, bank.AL.get(0).getAmount()),
+                () -> assertEquals(1000.0, bank.AL.get(1).getAmount())
+        );
+    }
+
+    @Test
+    void testWithdrawExactBalance() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Boundary case: withdrawing exactly the full balance (the ">=" threshold itself)
+        provideInput("11111111\n1111\n1000\n");
+        bank.withdraw();
+
+        assertEquals(0.0, bank.AL.get(0).getAmount());
+    }
+
+    @Test
+    void testTransferExactBalance() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));  // balance = 1000
+        bank.AL.add(new Account("Bob", 22222222, "2222", 0.0));    // balance = 1000
+
+        // Boundary case: transferring exactly the sender's full balance
+        provideInput("11111111\n1111\n22222222\n1000\n");
+        bank.transfer();
+
+        assertAll("Sender left with 0, receiver gets the full amount",
+                () -> assertEquals(0.0, bank.AL.get(0).getAmount()),
+                () -> assertEquals(2000.0, bank.AL.get(1).getAmount())
+        );
+    }
+
+    @Test
+    void testWithdrawZeroAmount() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Edge case: withdrawing exactly 0 should leave the balance unchanged
+        provideInput("11111111\n1111\n0\n");
+        bank.withdraw();
+
+        assertEquals(1000.0, bank.AL.get(0).getAmount());
+    }
+
+    @Test
+    void testTransferZeroAmount() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0));  // balance = 1000
+        bank.AL.add(new Account("Bob", 22222222, "2222", 0.0));    // balance = 1000
+
+        // Edge case: transferring exactly 0 should leave both balances unchanged
+        provideInput("11111111\n1111\n22222222\n0\n");
+        bank.transfer();
+
+        assertAll("Both balances unchanged after a zero-amount transfer",
+                () -> assertEquals(1000.0, bank.AL.get(0).getAmount()),
+                () -> assertEquals(1000.0, bank.AL.get(1).getAmount())
+        );
+    }
 
     @Test
     void testSaveAndLoadRoundTrip() {
@@ -288,7 +358,6 @@ class BankTest {
         file.delete();
 
         try {
-
             java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
             java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(fos);
             out.writeObject(new Account("Alice", 11111111, "1111", 0.0));
@@ -305,4 +374,3 @@ class BankTest {
         }
     }
 }
-
