@@ -88,4 +88,39 @@ class BankTest {
                 () -> assertEquals(1300.0, bank.AL.get(1).getAmount())
         );
     }
+
+    @Test
+    void testWithdrawAccountNotFound() {
+        Bank bank = new Bank();
+        // No accounts exist yet, so lookup will fail
+        provideInput("99999999\n0000\n");
+        bank.withdraw();
+
+        assertEquals(0, bank.AL.size());
+    }
+
+    @Test
+    void testWithdrawInsufficientBalance() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        // Alice tries to withdraw more than she has
+        provideInput("11111111\n1111\n5000\n");
+        bank.withdraw();
+
+        // Balance should be unchanged since withdrawal never completed
+        assertEquals(1000.0, bank.AL.get(0).getAmount());
+    }
+
+    @Test
+    void testWithdrawSuccess() {
+        Bank bank = new Bank();
+        bank.AL.add(new Account("Alice", 11111111, "1111", 0.0)); // balance = 1000
+
+        provideInput("11111111\n1111\n300\n");
+        bank.withdraw();
+
+        assertEquals(700.0, bank.AL.get(0).getAmount());
+    }
+
 }
