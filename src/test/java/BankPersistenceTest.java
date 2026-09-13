@@ -3,6 +3,8 @@ import org.junit.jupiter.api.AfterEach;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestCase;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestConfiguration;
 
 /**
  * Test naming convention: [UnitOfWork]_[StateUnderTest]_[ExpectedBehavior]
@@ -20,19 +22,29 @@ import static org.junit.jupiter.api.Assertions.*;
  * more established convention for method-level unit tests in enterprise Java, and it
  * pairs naturally with the Arrange-Act-Assert structure used inside every test below.
  *
- * This class covers the "Bank - Persistence & Display" Spira Test Set: addNewRecord(),
- * print(), save(), and load().
+ * This class covers the "Bank Persistence and Display" Spira Test Set [TX:6489]:
+ * addNewRecord(), print(), save(), and load().
  */
-class BankPersistenceTest {
+@SpiraTestConfiguration(
+        url = "https://rmit.spiraservice.net/",
+        login = "s4139882",
+        rssToken = "{25CBA1A6-10CC-41EC-99B0-7D4B1AD3AC10}",
+        projectId = 1046,
+        releaseId = 2718,
+        testSetId = 6489
+)
+public class BankPersistenceTest {
 
     private final InputStream originalSystemIn = System.in;
 
     @AfterEach
-    void restoreSystemIn() {
+    public void
+ restoreSystemIn() {
         System.setIn(originalSystemIn);
     }
 
-    private void provideInput(String data) {
+    private void
+ provideInput(String data) {
         ByteArrayInputStream testInput = new ByteArrayInputStream(data.getBytes());
         System.setIn(testInput);
     }
@@ -45,7 +57,9 @@ class BankPersistenceTest {
      * method exactly as written.
      */
     @Test
-    void addNewRecord_withValidInput_addsAccountToList() {
+    @SpiraTestCase(testCaseId = 50977)
+    public void
+ addNewRecord_withValidInput_addsAccountToList() {
         // Arrange
         provideInput("Athish\n12345678\n1234\n500\n");
         Bank bank = new Bank();
@@ -66,7 +80,9 @@ class BankPersistenceTest {
      * this, System.out itself is redirected to a ByteArrayOutputStream.
      */
     @Test
-    void print_withOneAccount_outputsCorrectDetails() {
+    @SpiraTestCase(testCaseId = 50979)
+    public void
+ print_withOneAccount_outputsCorrectDetails() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -92,11 +108,14 @@ class BankPersistenceTest {
      * one Bank object, then loaded into a completely fresh Bank object, proving the
      * data actually persisted to a real file on disk and back, rather than just
      * staying in memory. The file is deleted both before and after the test (the
-     * latter in a finally block) to keep the test isolated and avoid leaving data
+     * latter in a finally block) to keep the test isolated and apublic void
+ leaving data
      * behind.
      */
     @Test
-    void saveAndLoad_roundTrip_restoresAllAccountData() {
+    @SpiraTestCase(testCaseId = 50980)
+    public void
+ saveAndLoad_roundTrip_restoresAllAccountData() {
         // Arrange
         java.io.File file = new java.io.File("BankRecord.txt");
         file.delete();
@@ -130,7 +149,9 @@ class BankPersistenceTest {
      * This tests load()'s error-handling path when the file doesn't exist at all.
      */
     @Test
-    void load_whenFileMissing_leavesListEmptyWithoutThrowing() {
+    @SpiraTestCase(testCaseId = 50981)
+    public void
+ load_whenFileMissing_leavesListEmptyWithoutThrowing() {
         // Arrange
         java.io.File file = new java.io.File("BankRecord.txt");
         file.delete();
@@ -149,7 +170,9 @@ class BankPersistenceTest {
      * that's already a directory.
      */
     @Test
-    void save_whenTargetPathIsBlocked_printsErrorMessage() {
+    @SpiraTestCase(testCaseId = 50982)
+    public void
+ save_whenTargetPathIsBlocked_printsErrorMessage() {
         // Arrange
         java.io.File asDirectory = new java.io.File("BankRecord.txt");
         asDirectory.delete(); // clear any leftover file/directory from a previous run first
@@ -184,7 +207,9 @@ class BankPersistenceTest {
      * modifying Bank.java.
      */
     @Test
-    void load_whenNullObjectInStream_stopsReadingGracefully() throws Exception {
+    @SpiraTestCase(testCaseId = 50983)
+    public void
+ load_whenNullObjectInStream_stopsReadingGracefully() throws Exception {
         // Arrange
         java.io.File file = new java.io.File("BankRecord.txt");
         file.delete();

@@ -3,6 +3,8 @@ import org.junit.jupiter.api.AfterEach;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestCase;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestConfiguration;
 
 /**
  * Test naming convention: [UnitOfWork]_[StateUnderTest]_[ExpectedBehavior]
@@ -20,19 +22,29 @@ import static org.junit.jupiter.api.Assertions.*;
  * more established convention for method-level unit tests in enterprise Java, and it
  * pairs naturally with the Arrange-Act-Assert structure used inside every test below.
  *
- * This class covers the "Bank - Transactions" Spira Test Set: all transfer() and
- * withdraw() scenarios.
+ * This class covers the "Bank Transactions" Spira Test Set [TX:6488]: all transfer()
+ * and withdraw() scenarios.
  */
-class BankTransactionsTest {
+@SpiraTestConfiguration(
+        url = "https://rmit.spiraservice.net/",
+        login = "s4139882",
+        rssToken = "{25CBA1A6-10CC-41EC-99B0-7D4B1AD3AC10}",
+        projectId = 1046,
+        releaseId = 2718,
+        testSetId = 6488
+)
+public class BankTransactionsTest {
 
     private final InputStream originalSystemIn = System.in;
 
     @AfterEach
-    void restoreSystemIn() {
+    public void
+ restoreSystemIn() {
         System.setIn(originalSystemIn);
     }
 
-    private void provideInput(String data) {
+    private void
+ provideInput(String data) {
         ByteArrayInputStream testInput = new ByteArrayInputStream(data.getBytes());
         System.setIn(testInput);
     }
@@ -46,7 +58,9 @@ class BankTransactionsTest {
      * single, coherent operation.
      */
     @Test
-    void transfer_withValidSenderReceiverAndBalance_updatesBothBalances() {
+    @SpiraTestCase(testCaseId = 50944)
+    public void
+ transfer_withValidSenderReceiverAndBalance_updatesBothBalances() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -70,7 +84,9 @@ class BankTransactionsTest {
      * hide, even though this specific case happens to already pass with the current code.
      */
     @Test
-    void transfer_withAmountEqualToBalance_leavesSenderAtZero() {
+    @SpiraTestCase(testCaseId = 50948)
+    public void
+ transfer_withAmountEqualToBalance_leavesSenderAtZero() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -93,7 +109,9 @@ class BankTransactionsTest {
      * transfer behaves sensibly here too.
      */
     @Test
-    void transfer_withZeroAmount_leavesBalancesUnchanged() {
+    @SpiraTestCase(testCaseId = 50950)
+    public void
+ transfer_withZeroAmount_leavesBalancesUnchanged() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -116,7 +134,9 @@ class BankTransactionsTest {
      * the method fails safely without touching any account data when given a bad sender.
      */
     @Test
-    void transfer_withUnknownSenderAccount_returnsWithoutChanges() {
+    @SpiraTestCase(testCaseId = 50952)
+    public void
+ transfer_withUnknownSenderAccount_returnsWithoutChanges() {
         // Arrange
         Bank bank = new Bank();
         // No accounts exist yet, so sender lookup will fail
@@ -135,7 +155,9 @@ class BankTransactionsTest {
      * check if receiver's account number is not right and sender is validated.
      */
     @Test
-    void transfer_withUnknownReceiverAccount_returnsWithoutChanges() {
+    @SpiraTestCase(testCaseId = 50955)
+    public void
+ transfer_withUnknownReceiverAccount_returnsWithoutChanges() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -153,7 +175,9 @@ class BankTransactionsTest {
      * changes when the transfer is correctly rejected on insufficient funds.
      */
     @Test
-    void transfer_withInsufficientSenderBalance_isRejected() {
+    @SpiraTestCase(testCaseId = 50957)
+    public void
+ transfer_withInsufficientSenderBalance_isRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -177,7 +201,9 @@ class BankTransactionsTest {
      * evaluated as false.
      */
     @Test
-    void transfer_withIncorrectPin_isRejected() {
+    @SpiraTestCase(testCaseId = 50960)
+    public void
+ transfer_withIncorrectPin_isRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -197,7 +223,9 @@ class BankTransactionsTest {
      * transfer makes no real-world sense.
      */
     @Test
-    void transfer_withNegativeAmount_shouldBeRejected() {
+    @SpiraTestCase(testCaseId = 50961)
+    public void
+ transfer_withNegativeAmount_shouldBeRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -221,7 +249,9 @@ class BankTransactionsTest {
      * method does not catch, so it propagates up.
      */
     @Test
-    void transfer_withNonNumericAccountNumber_throwsInputMismatchException() {
+    @SpiraTestCase(testCaseId = 50963)
+    public void
+ transfer_withNonNumericAccountNumber_throwsInputMismatchException() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));
@@ -236,7 +266,9 @@ class BankTransactionsTest {
      * successful transfer test but for a single-account operation.
      */
     @Test
-    void withdraw_withValidAccountAndSufficientBalance_decreasesBalance() {
+    @SpiraTestCase(testCaseId = 50964)
+    public void
+ withdraw_withValidAccountAndSufficientBalance_decreasesBalance() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -254,7 +286,9 @@ class BankTransactionsTest {
      * withdrawal.
      */
     @Test
-    void withdraw_withAmountEqualToBalance_leavesAccountAtZero() {
+    @SpiraTestCase(testCaseId = 50965)
+    public void
+ withdraw_withAmountEqualToBalance_leavesAccountAtZero() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -272,7 +306,9 @@ class BankTransactionsTest {
      * Withdrawing exactly 0 should leave the balance unchanged.
      */
     @Test
-    void withdraw_withZeroAmount_leavesBalanceUnchanged() {
+    @SpiraTestCase(testCaseId = 50967)
+    public void
+ withdraw_withZeroAmount_leavesBalanceUnchanged() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -293,7 +329,9 @@ class BankTransactionsTest {
      * be exercised.
      */
     @Test
-    void withdraw_whenMultipleAccountsExist_updatesCorrectAccount() {
+    @SpiraTestCase(testCaseId = 50968)
+    public void
+ withdraw_whenMultipleAccountsExist_updatesCorrectAccount() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0));  // balance = 1000
@@ -314,7 +352,9 @@ class BankTransactionsTest {
      * This tests the "account not found" error path for withdraw().
      */
     @Test
-    void withdraw_withUnknownAccount_returnsWithoutChanges() {
+    @SpiraTestCase(testCaseId = 50971)
+    public void
+ withdraw_withUnknownAccount_returnsWithoutChanges() {
         // Arrange
         Bank bank = new Bank();
         // No accounts exist yet, so lookup will fail
@@ -332,7 +372,9 @@ class BankTransactionsTest {
      * the equivalent transfer test.
      */
     @Test
-    void withdraw_withInsufficientBalance_isRejected() {
+    @SpiraTestCase(testCaseId = 50973)
+    public void
+ withdraw_withInsufficientBalance_isRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -349,7 +391,9 @@ class BankTransactionsTest {
      * This tests the same compound-condition gap as the equivalent transfer test.
      */
     @Test
-    void withdraw_withIncorrectPin_isRejected() {
+    @SpiraTestCase(testCaseId = 50974)
+    public void
+ withdraw_withIncorrectPin_isRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000
@@ -367,7 +411,9 @@ class BankTransactionsTest {
      * amount, mirroring the equivalent transfer test.
      */
     @Test
-    void withdraw_withNegativeAmount_shouldBeRejected() {
+    @SpiraTestCase(testCaseId = 50976)
+    public void
+ withdraw_withNegativeAmount_shouldBeRejected() {
         // Arrange
         Bank bank = new Bank();
         bank.AL.add(new Account("Athish1", 11111111, "1111", 0.0)); // balance = 1000

@@ -27,22 +27,26 @@ class Account implements Serializable
 		Amount = 1000 + amount;
 	}
 
-	public void setName(String n)
+	public  void
+ setName(String n)
 	{
 		name = n;
 	}
 
-	public void setAccountNumber(int n)
+	public  void
+ setAccountNumber(int n)
 	{
 		account_number = n;
 	}
 
-	public void setPIN(String p)
+	public void
+ setPIN(String p)
 	{
 		pin = p;
 	}
 
-	public void setAmount(double a)
+	public  void
+ setAmount(double a)
 	{
 		Amount = a;
 	}
@@ -73,7 +77,8 @@ class Bank
 {
 	ArrayList<Account> AL = new ArrayList<Account>();
 
-	public void addNewRecord()
+	public  void
+ addNewRecord()
 	{
 		Scanner input = new Scanner(System.in);
 
@@ -91,7 +96,8 @@ class Bank
 		return;
 	}
 
-	public void transfer()
+	public  void
+ transfer()
 	{
 		Scanner input = new Scanner(System.in);
 		System.out.print("\nEnter sender's 8 digit account number: ");
@@ -143,7 +149,8 @@ class Bank
 		}
 	}
 
-	public void withdraw()
+	public  void
+ withdraw()
 	{
 		Scanner input = new Scanner(System.in);
 		System.out.print("\nEnter User's 8 digit account number: ");
@@ -181,7 +188,8 @@ class Bank
 		}
 	}
 
-	public void print()
+	public  void
+ print()
 	{
 		for(int i = 0; i<AL.size(); i++)
 		{
@@ -191,7 +199,8 @@ class Bank
 		}
 	}
 
-	public void load()
+	public  void
+ load()
 	{
 		try{
 			FileInputStream fis = new FileInputStream("BankRecord.txt");
@@ -210,7 +219,8 @@ class Bank
 		}
 	}
 
-	public void save()
+	public void
+ save()
 	{
 		try{
 			FileOutputStream fos = new FileOutputStream("BankRecord.txt");
@@ -229,7 +239,8 @@ class Bank
 
 class Task_Driver
 {
-	public static void main(String args[])
+	public static void
+ main(String args[])
 	{
 
 		Bank obj = new Bank();

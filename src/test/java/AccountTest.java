@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestCase;
+import com.inflectra.spiratest.addons.junitextension.SpiraTestConfiguration;
 
 /**
  * Test naming convention: [UnitOfWork]_[StateUnderTest]_[ExpectedBehavior]
@@ -14,8 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * three parts in a different order; Osherove's ordering was chosen here as it is the
  * more established convention for method-level unit tests in enterprise Java, and it
  * pairs naturally with the Arrange-Act-Assert structure used inside every test below.
+ *
+ * This class covers the "Account" Spira Test Set [TX:6482].
  */
-class AccountTest {
+@SpiraTestConfiguration(
+        url = "https://rmit.spiraservice.net/",
+        login = "s4139882",
+        rssToken = "{25CBA1A6-10CC-41EC-99B0-7D4B1AD3AC10}",
+        projectId = 1046,
+        releaseId = 2718,
+        testSetId = 6482
+)
+public class AccountTest {
 
     /**
      * This is the most fundamental test, as the entire suite depends on Account objects
@@ -26,7 +38,9 @@ class AccountTest {
      * application, not a hidden or accidental behaviour.
      */
     @Test
-    void constructor_withValidAndDefaultAmount_setsAllFieldsCorrectly() {
+    @SpiraTestCase(testCaseId = 48676)
+    public void
+ constructor_withValidAndDefaultAmount_setsAllFieldsCorrectly() {
         // Arrange
         // (object creation below doubles as the Act, since construction is what's tested)
 
@@ -50,7 +64,9 @@ class AccountTest {
      * again by an assertAll().
      */
     @Test
-    void defaultConstructorAndSetters_whenCalled_setDefaultsThenUpdateFields() {
+    @SpiraTestCase(testCaseId = 50919)
+    public void
+ defaultConstructorAndSetters_whenCalled_setDefaultsThenUpdateFields() {
         // Arrange
         Account acc = new Account();
 
@@ -86,7 +102,9 @@ class AccountTest {
      * negative-amount defect would occur in practice.
      */
     @Test
-    void setAmount_withNegativeValue_shouldBeRejected() {
+    @SpiraTestCase(testCaseId = 50933)
+    public void
+ setAmount_withNegativeValue_shouldBeRejected() {
         // Arrange & Act
         Account viaConstructor = new Account("Athish1", 11112222, "0000", -500.0);
         Account viaSetter = new Account();
@@ -107,7 +125,9 @@ class AccountTest {
      * unit test rather than an integration test.
      */
     @Test
-    void serialization_roundTrip_preservesAllFields() throws Exception {
+    @SpiraTestCase(testCaseId = 50931)
+    public void
+ serialization_roundTrip_preservesAllFields() throws Exception {
         // Arrange
         Account original = new Account("Athish1", 33333333, "3333", 200.0);
 

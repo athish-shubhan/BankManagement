@@ -5,7 +5,8 @@
 //{
 //    ArrayList<Account> AL = new ArrayList<Account>();
 //
-//    public void addNewRecord()
+//    public public void
+ //addNewRecord()
 //    {
 //        Scanner input = new Scanner(System.in);
 //
@@ -23,7 +24,8 @@
 //        return;
 //    }
 //
-//    public void transfer()
+//    public public void
+ //transfer()
 //    {
 //        Scanner input = new Scanner(System.in);
 //        System.out.print("\nEnter sender's 8 digit account number: ");
@@ -75,7 +77,8 @@
 //        }
 //    }
 //
-//    public void withdraw()
+//    public public void
+ //withdraw()
 //    {
 //        Scanner input = new Scanner(System.in);
 //        System.out.print("\nEnter User's 8 digit account number: ");
@@ -113,7 +116,8 @@
 //        }
 //    }
 //
-//    public void print()
+//    public public void
+ //print()
 //    {
 //        for(int i = 0; i<AL.size(); i++)
 //        {
@@ -123,7 +127,8 @@
 //        }
 //    }
 //
-//    public void load()
+//    public public void
+ //load()
 //    {
 //        try{
 //            FileInputStream fis = new FileInputStream("BankRecord.txt");
@@ -143,7 +148,8 @@
 //    }
 //
 //
-//    public void save()
+//    public public void
+// save()
 //    {
 //        try{
 //            FileOutputStream fos = new FileOutputStream("BankRecord.txt");

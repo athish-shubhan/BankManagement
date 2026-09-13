@@ -23,22 +23,26 @@
 //        Amount = 1000 + amount;
 //    }
 //
-//    public void setName(String n)
+//    public public void
+ //setName(String n)
 //    {
 //        name = n;
 //    }
 //
-//    public void setAccountNumber(int n)
+//    public public void
+ //setAccountNumber(int n)
 //    {
 //        account_number = n;
 //    }
 //
-//    public void setPIN(String p)
+//    public public void
+ //setPIN(String p)
 //    {
 //        pin = p;
 //    }
 //
-//    public void setAmount(double a)
+//    public public void
+ //setAmount(double a)
 //    {
 //        Amount = a;
 //    }
