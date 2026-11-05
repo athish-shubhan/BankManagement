@@ -33,7 +33,7 @@ The coverage report is written to `target/site/jacoco/index.html`.
 | `BankTransactionsTest` | `transfer()` and `withdraw()`: valid, insufficient funds, exact balance, zero, wrong PIN, unknown account, bad input |
 | `BankPersistenceTest` | `addNewRecord()`, `print()`, `save()` and `load()`, including a blocked save path |
 
-Console input is simulated by redirecting `System.in` to a `ByteArrayInputStream`.
+Console input is simulated by redirecting `System.in` to a `ByteArrayInputStream`. The code under test saves to `BankRecord.txt` in the current directory, and the persistence tests create and delete that file. Surefire therefore runs the tests in `target/test-work/`, so `mvn test` never touches a `BankRecord.txt` you created by running the app.
 
 ### Known defects (intentionally failing tests)
 
