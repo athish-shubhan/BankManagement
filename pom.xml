@@ -34,12 +34,6 @@
             <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.inflectra.spiratest</groupId>
-            <artifactId>junit5-extension</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -54,8 +48,80 @@
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.8.6.5</version>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
     </build>
+
+    <profiles>
+        <!--
+          Default: the SpiraTest JUnit 5 extension is not on Maven Central, so the
+          tests compile against a no-op copy of its two annotations in
+          src/test/spira-stub. A clean clone can run `mvn test` with no extra setup.
+        -->
+        <profile>
+            <id>spira-stub</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-spira-stub</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/test/spira-stub</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!--
+          `mvn test -Pspira` uses the real extension. Install its jar into your local
+          repository first (see README).
+        -->
+        <profile>
+            <id>spira</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.inflectra.spiratest</groupId>
+                    <artifactId>junit5-extension</artifactId>
+                    <version>1.0</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
