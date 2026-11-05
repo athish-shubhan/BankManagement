@@ -1,0 +1,29 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      # The suite deliberately contains failing tests that document defects
+      # (see known-defects.txt), so let Maven finish and check the result set.
+      - name: Run tests with coverage
+        run: mvn -B test -Dmaven.test.failure.ignore=true
+      - name: Check failures match known-defects.txt
+        run: python3 .github/scripts/check_known_defects.py
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/

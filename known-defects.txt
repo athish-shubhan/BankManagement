@@ -1,0 +1,7 @@
+# Tests that are expected to fail: each one documents a real defect in the
+# code under test (src/main/java), which is deliberately left unfixed.
+# Format: TestClass#testMethod  -- one per line. CI fails if the set of
+# failing tests is anything other than exactly this list.
+AccountTest#setAmount_withNegativeValue_shouldBeRejected
+BankTransactionsTest#transfer_withNegativeAmount_shouldBeRejected
+BankTransactionsTest#withdraw_withNegativeAmount_shouldBeRejected
