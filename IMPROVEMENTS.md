@@ -49,3 +49,30 @@ JaCoCo (`target/site/jacoco/jacoco.csv`):
 
 ### Files touched
 `pom.xml`, `README.md` (new), `IMPROVEMENTS.md` (new), `known-defects.txt` (new), `.github/workflows/tests.yml` (new), `.github/scripts/check_known_defects.py` (new), `src/test/spira-stub/…/SpiraTestCase.java` (new), `src/test/spira-stub/…/SpiraTestConfiguration.java` (new); deleted `src/main/java/Account.java`, `src/main/java/Bank.java`.
+
+## Round 2 — 2026-11-05
+
+### What changed
+1. **Bug: running the tests deleted the app's saved data.** `Bank.save()` / `load()` use `BankRecord.txt` in the current directory, and 4 tests in `BankPersistenceTest` create and delete that file. Maven runs tests from the project root, which is also where `java Task_Driver` writes its records, so `mvn test` silently deleted any real `BankRecord.txt`. Surefire now runs with `workingDirectory=target/test-work`. No test code or code under test changed.
+2. **Hygiene.** Stopped tracking the IntelliJ `.idea/` folder (its `misc.xml` pinned a local "homebrew-21" JDK) and ignored `.idea/` and the runtime `BankRecord.txt`.
+3. **README.** Documented why the tests run in `target/test-work/`.
+
+### How it was verified
+```
+$ echo "real user data" > BankRecord.txt
+$ mvn -B -q test -Dmaven.test.failure.ignore=true      # round-1 pom
+$ ls BankRecord.txt
+ls: cannot access 'BankRecord.txt': No such file or directory
+
+$ echo "real user data" > BankRecord.txt
+$ mvn -B test -Dmaven.test.failure.ignore=true         # this branch
+[ERROR] Tests run: 27, Failures: 3, Errors: 0, Skipped: 0
+$ cat BankRecord.txt
+real user data
+$ python3 .github/scripts/check_known_defects.py
+27 tests, 3 failing, 3 known defects
+```
+Coverage is unchanged: Account 24/24 lines, Bank 87/87 lines and 32/32 branches.
+
+### Files touched
+`pom.xml`, `.gitignore`, `README.md`, `IMPROVEMENTS.md`; removed `.idea/` from git.
