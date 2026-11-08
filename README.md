@@ -2,7 +2,7 @@
 
 A JUnit 5 test suite for a small console banking program (create account, transfer, withdraw, list accounts, save/load to a file).
 
-The code under test, in `src/main/java/Task_Driver.java`, was taken from a public project, [Adan-Asim/Java-Projects — Bank Management System](https://github.com/Adan-Asim/Java-Projects/tree/main/Bank%20Management%20System). It is deliberately kept as it was. The work in this repository is the tests in `src/test/java`, which include tests that document real defects in that code.
+The code under test, in `src/main/java/Task_Driver.java`, was taken from a public project, "Bank Management System" in the GitHub repository `Adan-Asim/Java-Projects` (that account no longer exists, so the original link is dead). It is deliberately kept as it was. The work in this repository is the tests in `src/test/java`, which include tests that document real defects in that code.
 
 ## Quick start
 
